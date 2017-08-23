@@ -1,0 +1,15 @@
+CACHE MANIFEST
+#ver:8/23/2017, 12:26:12 PM
+#plugin:4.8.3
+
+CACHE:
+../app.bundle.js
+../app.css
+../
+../offline.html
+
+NETWORK:
+*
+
+FALLBACK:
+/ /offline.html
