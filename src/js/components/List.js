@@ -1,6 +1,10 @@
 import React from 'react';
 import fetchPopularRepos from '../utils/Api.js';
 
+
+
+
+
 class Listrepo extends React.Component{
 
 	constructor(props) {
@@ -12,6 +16,8 @@ class Listrepo extends React.Component{
 		}
 		this.updateLanguage = this.updateLanguage.bind(this);
 	    this.toggleClass = this.toggleClass.bind(this);
+	    this.storeLocal = this.storeLocal.bind(this);
+
 	}
 
 	componentWillMount (){
@@ -20,18 +26,34 @@ class Listrepo extends React.Component{
 	componentDidMount() {
 		this.updateLanguage(this.state.selectedLanguage);
 	}
+	storeLocal() {
+		localStorage.setItem(this.state.selectedLanguage, JSON.stringify(this.state.repos));
+	}
 
 	updateLanguage(lang){
 		const _ = this;
 		this.setState({
-			selectedLanguage: lang,
-			repos: null
+			selectedLanguage: lang
 		});
-		fetchPopularRepos(lang).then(function(repos){
+
+		fetchPopularRepos(lang).then(repos => {
 			_.setState({
 				repos : repos
 			});
-		});
+			this.storeLocal();
+
+		})
+		.catch(error =>{
+			console.log('kontol = ' + error);
+
+			var localLanguage = localStorage.getItem(lang);
+	    	var ObjectLanguage = JSON.parse(localLanguage);
+	    	console.log('local object = ' + ObjectLanguage);
+			_.setState({
+				repos : ObjectLanguage
+			});
+		})
+		// this.loadStore(this.state.selectedLanguage); 
 	}
 
     toggleClass(selectLang) {
@@ -40,14 +62,14 @@ class Listrepo extends React.Component{
 	   	});
     };
 
+
 	handleClick(selectLang, event){
     	this.toggleClass(selectLang);
-    	var toki = event.currentTarget.textContent;
-    	this.updateLanguage(toki);
+    	var textNode = event.currentTarget.textContent;
+    	this.updateLanguage(textNode);
     };
    
 	render(){
-		console.log(this.state.repos);
 		var languages = ['Javascript', 'PHP', 'CSS', 'Python'];
 		var list =  languages.map(function (item, i){
 				        return (
@@ -61,23 +83,20 @@ class Listrepo extends React.Component{
 				        );
 			      	}.bind(this));
 
+
+		
+
+		
+
 		if(!(this.state.repos))  {
 			return (
 				<div>
 			  		<ul className='main-navigation h-list list--none'>
 			  			{list}
 			  		</ul>
-			  		<div class="loader">
-						<span class="loader-block"></span>
-						<span class="loader-block"></span>
-						<span class="loader-block"></span>
-						<span class="loader-block"></span>
-						<span class="loader-block"></span>
-						<span class="loader-block"></span>
-						<span class="loader-block"></span>
-						<span class="loader-block"></span>
-						<span class="loader-block"></span>
-					</div>
+				    <div className="container popular-repos">
+
+				    </div>	
 			    </div>	
 
 		    )

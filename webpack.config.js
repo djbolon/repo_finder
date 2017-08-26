@@ -17,7 +17,7 @@ var cssProd = ExtractTextPlugin.extract({
 var cssConfig = isProd ? cssProd : cssDev;
 
 var swDev =  [':rest:'];
-var swProd = ['app.bundle.js', 'app.css', 'index.html', 'offline.html'];
+var swProd = ['app.bundle.js', 'app.css', 'index.html'];
 var swConfig = isProd ? swProd : swDev;
 
 
@@ -103,11 +103,11 @@ module.exports = {
 			hash: true,
 			template: './src/index.html'
 		}),
-		new HtmlWebpackPlugin({
-			hash: true,
-			filename: './offline.html',
-			template: './src/offline.html'
-		}),
+		// new HtmlWebpackPlugin({
+		// 	hash: true,
+		// 	filename: './offline.html',
+		// 	template: './src/offline.html'
+		// }),
 		
 		new ExtractTextPlugin({
             filename: 'app.css',
@@ -119,17 +119,16 @@ module.exports = {
 			 	main: swConfig
 			},
 			externals: [
-			    './img/source.gif',
-			    './offline.html'
+			    './img/source.gif'
 			],
 			ServiceWorker: {
-				navigateFallbackURL: '/'
+				navigateFallbackURL: '/offline'
 			},
 			
 			AppCache: {
 				// caches: ['main', 'additional'],
 				FALLBACK: {
-				  '/': '/offline.html'
+				  '/': '/offline'
 				}
 			}
 
